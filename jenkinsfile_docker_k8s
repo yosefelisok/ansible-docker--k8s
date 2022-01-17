@@ -16,8 +16,8 @@ pipeline {
                     sh "docker push yosef/nodeapp:${DOCKER_TAG}"
                  }
         }
-    }
 
+    }
 }
 
 def getDockerTag(){
