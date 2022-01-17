@@ -1,26 +1,24 @@
 pipeline {
-    agent any
-    environment{
-        DOCKER_TAG = getDockerTag()
-    }
-    stages{
-        stage('Build Docker Image'){
-            steps{
-                sh "docker build . -t yosefeli/nodeapp:${DOCKER_TAG} "
-            }
-        }
-        stage('DockerHub Push'){
-            steps{
-                withCredentials([string(credentialsId: 'docker-hub', variable: 'dockerHubPwd')]) {
-                    sh "docker login -u yosefeli -p ${dockerHubPwd}"
-                    sh "docker push yosef/nodeapp:${DOCKER_TAG}"
-                 }
-        }
+  agent any
+  environment {
+      registry = "yosefelisok/ansible-docker--k8s"
 
-    }
-}
-
-def getDockerTag(){
-    def tag  = sh script: 'git rev-parse HEAD', returnStdout: true
-    return tag
-}
+  }
+  stages {
+      stage('Build') {
+          agent {
+              docker {
+                  image 'python'
+              }
+          }
+          steps {
+              // Create our project directory.
+              sh 'cd ${GOPATH}/src'
+              sh 'mkdir -p ${GOPATH}/src/hello-world'
+              // Copy all files in our Jenkins workspace to our project directory.
+              sh 'cp -r ${WORKSPACE}/* ${GOPATH}/src/hello-world'
+              // Build the app.
+              sh 'go build'
+          }
+      }
+  }
