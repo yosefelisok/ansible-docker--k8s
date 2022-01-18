@@ -1,13 +1,7 @@
-FROM python:3.8-slim-buster
-RUN apt-get update && apt-get upgrade -y \
-    && apt-get clean
+FROM python:3.8-alpine
 
 RUN mkdir /app
+ADD . /app
 WORKDIR /app
-
-COPY requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
-
-COPY . .
-
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+RUN pip install -r requirements.txt
+CMD ["python", "hello-boris.py"]
