@@ -1,7 +1,7 @@
 # ansible-docker--k8s
 
 
-Deployment of python program hello-boris.py via Jenkins pipeline (jenkinsfile named jenkinsfinalversion ) 
+Deployment of python program hello-boris.py via Jenkins pipeline (jenkinsfile is named jenkinsfinalversion ) 
 
 GIT => Jenkins Server => DockerHUb image => Pod in Kubernetes Cluster in EC2 AWS
 
