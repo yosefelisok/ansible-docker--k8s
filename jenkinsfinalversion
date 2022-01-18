@@ -1,0 +1,51 @@
+pipeline {
+  environment {
+    registry = "yosefeli/leumi-pr"
+    registryCredential = 'dockerhub'
+    dockerImage = ''
+  }
+  agent any
+  stages {
+    stage('Cloning Git') {
+      steps {
+        git 'https://github.com/gustavoapolinario/microservices-node-example-todo-frontend.git'
+      }
+    }
+    stage('Building image') {
+      steps{
+        script {
+          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+        }
+      }
+    }
+    stage('Deploy Image') {
+      steps{
+        script {
+          docker.withRegistry( '', registryCredential ) {
+            dockerImage.push()
+          }
+        }
+      }
+    }
+    stage('Remove Unused docker image') {
+      steps{
+        sh "docker rmi $registry:$BUILD_NUMBER"
+      }
+    }
+    stage('Deploy to DevServer') {
+      steps{
+        sshagent([yosef-aws-k8s]) {
+            sh "scp -o StrictHostKeyChecking=no service.yml pods.yml ec2-user@52.66.70.61:/home/ec2-user/"
+          script{
+            try{
+                sh "ssh ec2-user@52.66.70.61 kubectl apply -f ."
+            }
+            catch(error){
+                sh "ssh ec2-user@52.66.70.61 kubectl create -f ."
+            }
+          }
+        }
+      }
+    }
+  }
+}

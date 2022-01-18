@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app
+  labels:
+    app: app
+spec:
+  containers:
+    - name: nodeapp
+      image: yosefeli/leumi-pr:$BUILD_NUMBER"
+      ports:
+        - containerPort: 8080
