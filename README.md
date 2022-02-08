@@ -1,4 +1,4 @@
-# ansible-docker--k8s
+# jenkins-docker--k8s
 
 
 Deployment of python program hello-boris.py via Jenkins pipeline (jenkinsfile is named jenkinsfinalversion ) 
